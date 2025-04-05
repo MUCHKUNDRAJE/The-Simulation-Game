@@ -17,6 +17,7 @@ useEffect(() => {
        
         <div  className='h-full w-full absolute top-0 left-0 flex items-center justify-center z-10 overflow-hidden '>
           <div className='container h-50 w-80 absolute top-4 left-10  '>
+          <h1 className='text-xs text-zinc-900'>MK Presents -</h1>
                 <h1 className='text-2xl  text-white'>THE</h1>
                 <h1 className='text-7xl  text-white'>Simulation</h1>
                  <h1 className='text-5xl  text-white text-satrt '>Game</h1>
@@ -64,6 +65,7 @@ useEffect(() => {
                 </div>
             </div>
           </div>
+       
           </div>
         </div>
     </div>
