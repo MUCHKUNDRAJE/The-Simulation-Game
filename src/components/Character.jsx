@@ -8,16 +8,19 @@ import { keyPressHandler } from "../utils/keypress";
 export default function Character() {
   const characterRef = useRef(null);
   const mixerRef = useRef(null);
-  const actionRef = useRef(null);
-  const jumpActionRef = useRef(null);
+  const actionRef = useRef(null); // Walking animation
+  const jumpActionRef = useRef(null); // Jump animation
+  const   FlairActionRef = useRef(null);
   const [keys, setKeys] = useState({ KeyW: false, KeyA: false, KeyS: false, KeyD: false });
   const [KeyPress, setKeyPress] = useState();
   const { camera } = useThree();
   const mouse = useRef({ x: 0, y: 0 });
   const rotation = useRef({ azimuth: Math.PI / 2, polar: Math.PI / 4 });
   const velocity = useRef(new Vector3());
-  const [Jump, setJump] = useState(false);
+ const [Jump, setJump] = useState(false);
   const [isJumping, setIsJumping] = useState(false);
+  const [Flair, setFlair] = useState(false);
+  const [isFlairing, setIsFlairing] = useState(false);
 
   useEffect(() => {
     const loader = new FBXLoader();
@@ -37,11 +40,18 @@ export default function Character() {
         actionRef.current = action;
       });
 
-      loader.load("/models/Hip Hop Dancing.fbx", (jump) => {
+      loader.load("/models/Jump.fbx", (jump) => {
         const jumpAction = mixer.clipAction(jump.animations[0]);
         jumpAction.setLoop(THREE.LoopOnce);
         jumpAction.clampWhenFinished = true;
         jumpActionRef.current = jumpAction;
+      });
+
+      loader.load("/models/Hip Hop Dancing.fbx", (jump) => {
+        const FlairAction = mixer.clipAction(jump.animations[0]);
+        FlairAction.setLoop(THREE.LoopOnce);
+        FlairAction.clampWhenFinished = true;
+        FlairActionRef.current = FlairAction;
       });
 
       camera.position.set(0, 2, 5);
@@ -61,6 +71,12 @@ export default function Character() {
         return;
       }
 
+      
+      if (event.code === "KeyF" && !isJumping) {
+        setFlair(true);
+        return;
+      }
+
       if (!isJumping && ["KeyW", "KeyA", "KeyS", "KeyD"].includes(event.code)) {
         if (actionRef.current) actionRef.current.paused = false;
       }
@@ -73,7 +89,9 @@ export default function Character() {
 
       if (event.code === "Space") return;
 
-      if (!Object.values(updated).some((v) => v) && !isJumping) {
+      if (event.code === "KeyF") return;
+
+      if (!Object.values(updated).some((v) => v) && !isJumping && !isFlairing) {
         if (actionRef.current) actionRef.current.paused = true;
       }
     };
@@ -105,19 +123,58 @@ export default function Character() {
   useEffect(() => {
     if (Jump && jumpActionRef.current) {
       setIsJumping(true);
-      jumpActionRef.current.reset().play();
-      if (actionRef.current) actionRef.current.paused = true;
+
+      // Pause walk and crossfade to jump
+      if (actionRef.current && actionRef.current.isRunning()) {
+        jumpActionRef.current.reset().play();
+        jumpActionRef.current.crossFadeFrom(actionRef.current, 0.3, false);
+        actionRef.current.paused = true;
+      } else {
+        jumpActionRef.current.reset().play();
+      }
+
+      const jumpDuration = jumpActionRef.current.getClip().duration * 500;
 
       setTimeout(() => {
         setIsJumping(false);
         setJump(false);
 
         if (Object.values(keys).some((v) => v) && actionRef.current) {
-          actionRef.current.paused = false;
+          actionRef.current.reset().play();
+          actionRef.current.paused = true;
+          actionRef.current.crossFadeFrom(jumpActionRef.current, 0.3, false);
         }
-      }, 1000); // Match this to jump duration
+      }, jumpDuration);
     }
   }, [Jump]);
+
+  useEffect(() => {
+    if (Flair && FlairActionRef.current) {
+      setIsFlairing(true);
+
+      // Pause walk and crossfade to Flair
+      if (actionRef.current && actionRef.current.isRunning()) {
+        FlairActionRef.current.reset().play();
+        FlairActionRef.current.crossFadeFrom(actionRef.current, 0.3, false);
+        actionRef.current.paused = true;
+      } else {
+        FlairActionRef.current.reset().play();
+      }
+
+      const FlairDuration = FlairActionRef.current.getClip().duration * 500;
+
+      setTimeout(() => {
+        setIsFlairing(false);
+        setFlair(false);
+
+        if (Object.values(keys).some((v) => v) && actionRef.current) {
+          actionRef.current.reset().play();
+          actionRef.current.paused = true;
+          actionRef.current.crossFadeFrom(FlairActionRef.current, 0.3, false);
+        }
+      }, FlairDuration);
+    }
+  }, [Flair]);
 
   useFrame((_, delta) => {
     if (!characterRef.current) return;

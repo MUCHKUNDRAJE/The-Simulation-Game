@@ -7,10 +7,12 @@ import JumpButton from './components/button';
 
 function App() {
   const [controls, setControls] = useState(null);
+  const [Jump, setJump] = useState(false);
+  const [isJumping, setIsJumping] = useState(false);
   return (
   <>
   <div  style={{ width: "100vw", height: "100vh" } } className='realtive'>
-    <Scene/>
+    <Scene  Jump={Jump} isJumping={setIsJumping}/>
     <Screen/>
     {controls && <JumpButton onJump={controls.jump} />}
   </div>

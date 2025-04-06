@@ -15,7 +15,7 @@ useEffect(() => {
     return (
     <div>
        
-        <div  className='h-full w-full absolute top-0 left-0 flex items-center justify-center z-10 overflow-hidden '>
+        <div  className='h-full w-full absolute top-0 left-0 flex items-center justify-center z-10 overflow-hidden pointer-events-none '>
           <div className='container h-50 w-80 absolute top-4 left-10  '>
           <h1 className='text-xs text-zinc-900'>MK Presents -</h1>
                 <h1 className='text-2xl  text-white'>THE</h1>
@@ -29,8 +29,8 @@ useEffect(() => {
             </div>       
         </div> 
 
-        <div className='container h-50  absolute left-[1200px] top-[63vh]  right-0 text-zinc-800'>
-          <div style={{padding:"15px"}} className='h-[250px] w-80  backdrop-blur-sm bg-white/30 border border-white/20 rounded-xl p-4 shadow-lg      '>
+        <div className='container h-50  absolute left-[1200px] top-[59vh]  right-0 text-zinc-800'>
+          <div style={{padding:"15px"}} className='h-[280px] w-80  backdrop-blur-sm bg-white/30 border border-white/20 rounded-xl p-4 shadow-lg      '>
             <div className='leading-[0.6]' >
                 <h1 className=' text-zinc-900'>THE</h1>
                 <h1 className='text-2xl  text-zinc-900'>Simulation</h1>
@@ -62,6 +62,12 @@ useEffect(() => {
                     D
                   </div>
                   <h1 className='text-sm'> Move Right</h1>
+                </div>
+                <div className='flex gap-2'>
+                  <div  className='flex items-center justify-center bg-white w-12 rounded-sm text-zinc-900 '>
+                    Space
+                  </div>
+                  <h1 className='text-sm'> Jump</h1>
                 </div>
             </div>
           </div>

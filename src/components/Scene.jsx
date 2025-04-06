@@ -5,7 +5,7 @@ import Character from './Character';
 
 
 
-function Scene() {
+function Scene({Jump , isJumping}) {
   return (
     <Canvas shadows camera={{ position: [0, 2, 5], fov: 50 }}>
       <ambientLight intensity={0.5} />
@@ -17,10 +17,9 @@ function Scene() {
     
       <gridHelper args={[30, 20, 'white', '#CBCBCB']} /> 
 
-      {/* Character */}
       <Character />
 
-      {/* Controls */}
+   
       <OrbitControls />
     </Canvas>
   );
